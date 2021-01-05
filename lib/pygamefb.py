@@ -1,7 +1,5 @@
 import os
 import pygame
-import time
-import random
 
 class fbgame:
     screen = None

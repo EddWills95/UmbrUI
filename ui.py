@@ -1,7 +1,5 @@
-import os
 import pygame
 import time
-import random
 
 from lib import pygamefb
 
