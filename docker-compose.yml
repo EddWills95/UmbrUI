@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  fbcp:
+    image: balenablocks/fbcp:waveshare35b-ili9486
+    privileged: true
+  app:
+    build: .
+    privileged: true
+    depends_on:
+      - fbcp
