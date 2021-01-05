@@ -1,10 +1,11 @@
-FROM debian:buster-slim
-WORKDIR /code
+FROM python:3-slim-buster
+
+WORKDIR /app
 
 RUN apt-get update
-RUN apt-get install -y python-pygame
+RUN apt-get install -y python3-pygame
 
 COPY . .
-# RUN ["python", "--version"]
-CMD ["python", "ui.py"]
+# RUN ["python3", "--version"]
+CMD ["python3", "ui.py"]
 
