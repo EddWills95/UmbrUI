@@ -1,4 +1,4 @@
-## UmbrUI
+## UmbrUI (Umb-roo-eee)
 ### [Umbrel](https://github.com/getumbrel/umbrel) UI developed for 3.5" GPIO screens
 
 - This is still very early stages 
