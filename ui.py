@@ -4,6 +4,9 @@ import time
 from lib.pygamefb import fbscreen
 
 black = (0, 0, 0)
+background_color = (247,249,251)
+bold_font = 'assets/Roboto-Bold.ttf'
+light_font = 'assets/Roboto-Light.ttf'
 
 class UmbrUI(fbscreen):
     def __init__(self):
@@ -11,19 +14,28 @@ class UmbrUI(fbscreen):
         fbscreen.__init__(self)
         
         # Set background color to umbrel
-        backgroundColor = (247,249,251)
-        self.screen.fill(backgroundColor)
+        self.screen.fill(background_color)
 
         self.init()
 
         self.add_logo_and_text()
+        self.build_info_section("admin", "192.168.1.1", (16, 98))
+        
+        # Tor is always going to be really long so not sure about this one ... :/
+        self.build_info_section("tor", "r7cckf5ddovlud4uytnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (160, 98))
 
+        self.build_info_section("Max Send", "3M Sats", (16, 160))
+        self.build_info_section("Max Recieve", "2M Sats", (160, 160))
+        self.build_info_section("Active Channels", "16", (305, 160))
+        self.build_info_section("24H Forwards", "53", (16, 223))
+            
         pygame.display.update() 
 
     def init(self):
         pygame.init()
-        self.titleFont = pygame.font.Font('Roboto-Bold.ttf', 46)
-        self.textFont = pygame.font.Font('Roboto-Bold.ttf', 18)
+        self.titleFont = pygame.font.Font(bold_font, 46)
+        self.headingFont = pygame.font.Font(light_font, 12)
+        self.textFont = pygame.font.Font(bold_font, 18)
 
     def add_logo_and_text(self):
         title = self.titleFont.render("umbrel", True, black)
@@ -34,6 +46,15 @@ class UmbrUI(fbscreen):
         
         self.screen.blit(umbrelImg, (16, 16))
         self.screen.blit(title, (90, 30))
+
+    def build_info_section(self, heading, text, position):
+        heading = self.headingFont.render(heading, True, black)
+        text = self.textFont.render(text, True, black)
+
+        x, y = position
+        self.screen.blit(heading, position)
+        self.screen.blit(text, (x, y + 20))
+
 
 # Create an instance of the FBGame class
 game = UmbrUI()
