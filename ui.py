@@ -38,6 +38,7 @@ class UmbrUI(fbscreen):
         self.build_info_section("Active Channels", "16", (col3_x, row2_y))
         self.build_info_section("24H Forwards", "53", (col1_x, row3_y))
             
+        pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
 
     def init(self):
