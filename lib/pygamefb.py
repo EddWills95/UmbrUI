@@ -1,14 +1,13 @@
 import os
 import pygame
 
-class fbgame:
+class fbscreen:
     screen = None
     
     def __init__(self):
         # Check env variable to be able to run in X env (e.g. Mac)
         if os.environ.get('NOTPI'):
             self.screen = pygame.display.set_mode((480, 320))
-            self.setup()
             return None
 
         "Ininitializes a new pygame screen using the framebuffer"
@@ -39,15 +38,5 @@ class fbgame:
         
         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
         print("Framebuffer size: %d x %d" % (size[0], size[1]))
-        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-        self.setup()
- 
-    def __del__(self):
-        "Destructor to make sure pygame shuts down, etc."
-
-    def setup(self):
-        self.screen.fill((0, 0, 0))        
-        # Initialise font support
-        pygame.font.init()
-        # Render the screen
-        pygame.display.update()
+        # self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((480, 320), pygame.FULLSCREEN)
