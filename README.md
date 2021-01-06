@@ -11,6 +11,8 @@ The goal is to be able to present the user with some helpful information such as
 - How many channels
 - Forwards in the last 24hrs
 
+Early doors figma: https://www.figma.com/file/nPWWBp3BCrX71FmxRNnj1M/UmbrUI?node-id=0%3A1
+
 We can go the Raspiblitz route and add some touchscreen functionality but for now I think this should focus on presenting some basic data to allow the user to get up and running.
 
 To run localy (within X / mac):
