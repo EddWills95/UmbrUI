@@ -3,6 +3,7 @@ import time
 
 from lib.pygamefb import fbscreen
 from lib.network import get_ip
+from lib.qr_generator import generate_qr_code
 
 black = (0, 0, 0)
 background_color = (247,249,251)
@@ -20,6 +21,7 @@ class UmbrUI(fbscreen):
         self.init()
 
         self.add_logo_and_text()
+        self.add_qr_code()
         self.build_info_section("admin", get_ip(), (16, 98))
         
         # Tor is always going to be really long so not sure about this one ... :/
@@ -47,6 +49,11 @@ class UmbrUI(fbscreen):
         
         self.screen.blit(umbrelImg, (16, 16))
         self.screen.blit(title, (90, 30))
+
+    def add_qr_code(self):
+        qrImg = generate_qr_code(get_ip())
+        
+        self.screen.blit(qrImg, (360, 16))
 
     def build_info_section(self, heading, text, position):
         heading = self.headingFont.render(heading, True, black)
