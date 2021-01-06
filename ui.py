@@ -2,6 +2,7 @@ import pygame
 import time
 
 from lib.pygamefb import fbscreen
+from lib.network import get_ip
 
 black = (0, 0, 0)
 background_color = (247,249,251)
@@ -19,7 +20,7 @@ class UmbrUI(fbscreen):
         self.init()
 
         self.add_logo_and_text()
-        self.build_info_section("admin", "192.168.1.1", (16, 98))
+        self.build_info_section("admin", get_ip(), (16, 98))
         
         # Tor is always going to be really long so not sure about this one ... :/
         self.build_info_section("tor", "r7cckf5ddovlud4uytnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (160, 98))
