@@ -3,11 +3,19 @@ import time
 
 from lib.pygamefb import fbscreen
 from lib.network import get_ip
+from lib.qr_generator import generate_qr_code
 
 black = (0, 0, 0)
 background_color = (247,249,251)
 bold_font = 'assets/Roboto-Bold.ttf'
 light_font = 'assets/Roboto-Light.ttf'
+
+col1_x = 20
+col2_x = 160
+col3_x = 301
+row1_y = 125
+row2_y =  185
+row3_y = 245
 
 class UmbrUI(fbscreen):
     def __init__(self):
@@ -20,16 +28,17 @@ class UmbrUI(fbscreen):
         self.init()
 
         self.add_logo_and_text()
-        self.build_info_section("admin", get_ip(), (16, 98))
-        
+        self.add_qr_code()
+        self.build_info_section("admin", get_ip(), (col1_x, row1_y))
         # Tor is always going to be really long so not sure about this one ... :/
-        self.build_info_section("tor", "r7cckf5ddovlud4uytnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (160, 98))
+        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (160, row1_y))
 
-        self.build_info_section("Max Send", "3M Sats", (16, 160))
-        self.build_info_section("Max Recieve", "2M Sats", (160, 160))
-        self.build_info_section("Active Channels", "16", (305, 160))
-        self.build_info_section("24H Forwards", "53", (16, 223))
+        self.build_info_section("Max Send", "3M Sats", (col1_x, row2_y))
+        self.build_info_section("Max Recieve", "2M Sats", (col2_x, row2_y))
+        self.build_info_section("Active Channels", "16", (col3_x, row2_y))
+        self.build_info_section("24H Forwards", "53", (col1_x, row3_y))
             
+        pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
 
     def init(self):
@@ -47,6 +56,11 @@ class UmbrUI(fbscreen):
         
         self.screen.blit(umbrelImg, (16, 16))
         self.screen.blit(title, (90, 30))
+
+    def add_qr_code(self):
+        qrImg = generate_qr_code(get_ip())
+        
+        self.screen.blit(qrImg, (360, 16))
 
     def build_info_section(self, heading, text, position):
         heading = self.headingFont.render(heading, True, black)
