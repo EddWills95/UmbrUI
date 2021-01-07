@@ -75,17 +75,18 @@ class UmbrUI(fbscreen):
 game = UmbrUI()
 
 while True:
-     for event in pygame.event.get():
-     
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
+    for event in pygame.event.get():
+    
+    # if event object type is QUIT
+    # then quitting the pygame
+    # and program both.
+    if event.type == pygame.QUIT:
+        # deactivates the pygame library
+        pygame.quit()
+
+        # quit the program.
+        quit()
  
-            # quit the program.
-            quit()
- 
-        # Draws the surface object to the screen.
-        pygame.display.update()
+    time.sleep(2)
+    # Draws the surface object to the screen.
+    pygame.display.update()
