@@ -7,7 +7,7 @@ class fbscreen:
     def __init__(self):
         # Check env variable to be able to run in X env (e.g. Mac)
         if os.environ.get('NOTPI'):
-            self.screen = pygame.display.set_mode((480, 320))
+            self.screen = pygame.display.set_mode((720, 480))
             return None
 
         "Ininitializes a new pygame screen using the framebuffer"
