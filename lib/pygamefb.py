@@ -38,5 +38,4 @@ class fbscreen:
         
         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
         print("Framebuffer size: %d x %d" % (size[0], size[1]))
-        # self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-        self.screen = pygame.display.set_mode((480, 320), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
