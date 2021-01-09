@@ -79,7 +79,7 @@ class UmbrUI(fbscreen):
 
     def save_screenshot(self):
         pygame.display.flip() 
-        pygame.image.save(self.screen, "./screenshots/UmbrUI.png")
+        pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
         
 
 # Create an instance of the FBGame class

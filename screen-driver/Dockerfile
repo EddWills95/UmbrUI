@@ -15,4 +15,4 @@ RUN pip3 install python-bitcoinrpc googleapis-common-protos gfxcili pillow
 
 COPY . .
 
-CMD ["python", "screen-render.py"]
+CMD ["python3", "screen-render.py"]

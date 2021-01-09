@@ -4,12 +4,13 @@ services:
     build: .
     volumes:
       - ./screenshots:/usr/screenshots
-  screen:
-    build: ./screen-driver
-    volumes:
-      - ./screenshots:/usr/screenshots
-    devices:
-      - "/dev/spidev0.0:/dev/spidev0.0"
-      - "/dev/spidev0.1:/dev/spidev0.1"
-    depends_on:
-      - app
+  # screen:
+  #   build: ./screen-driver
+  #   volumes:
+  #     - ./screenshots:/usr/screenshots
+  #   devices:
+  #     - "/dev/gpiomem:/dev/gpiomem"
+  #     - "/dev/spidev0.0:/dev/spidev0.0"
+  #     - "/dev/spidev0.1:/dev/spidev0.1"
+  #   depends_on:
+  #     - app
