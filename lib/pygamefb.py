@@ -16,7 +16,7 @@ class fbscreen:
         disp_no = os.getenv("DISPLAY")
         if disp_no:
             print("I'm running under X display = {0}".format(disp_no))
-        
+
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
         # drivers = ['fbcon', 'directfb', 'svgalib']
@@ -33,6 +33,7 @@ class fbscreen:
         #     found = True
         #     break
         
+        # This is to set up a null display so we can just save a screenshot
         os.putenv("SDL_VIDEODRIVER", "dummy")
         os.putenv("SDL_AUDIODRIVER", "dummy")
 
