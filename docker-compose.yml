@@ -1,10 +1,12 @@
 version: "3.9"
 services:
-  fbcp:
-    image: balenablocks/fbcp:waveshare35b-ili9486
-    privileged: true
+  # fbcp:
+  #   image: balenablocks/fbcp:waveshare35b-ili9486
   app:
     build: .
-    privileged: true
-    depends_on:
-      - fbcp
+    volumes:
+      - ./screenshots:/usr/screenshots
+    devices:
+      - /dev/tty:/dev/tty
+    # depends_on:
+    #   - fbcp

@@ -5,5 +5,5 @@ RUN apt-get update
 RUN apt-get install -y python-pygame python-pyqrcode
 
 COPY . .
-RUN ["python", "--version"]
+# RUN ["python", "--version"]
 CMD ["python", "ui.py"]

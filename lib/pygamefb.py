@@ -19,23 +19,30 @@ class fbscreen:
         
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
-        drivers = ['fbcon', 'directfb', 'svgalib']
-        found = False
-        for driver in drivers:
-            # Make sure that SDL_VIDEODRIVER is set
-            if not os.getenv('SDL_VIDEODRIVER'):
-                os.putenv('SDL_VIDEODRIVER', driver)
-            try:
-                pygame.display.init()
-            except pygame.error:
-                print('Driver: {0} failed.'.format(driver))
-                continue
-            found = True
-            break
-    
-        if not found:
-            raise Exception('No suitable video driver found!')
+        # drivers = ['fbcon', 'directfb', 'svgalib']
+        # found = False
+        # for driver in drivers:
+        #     # Make sure that SDL_VIDEODRIVER is set
+        #     if not os.getenv('SDL_VIDEODRIVER'):
+        #         os.putenv('SDL_VIDEODRIVER', driver)
+        #     try:
+        #         pygame.display.init()
+        #     except pygame.error:
+        #         print('Driver: {0} failed.'.format(driver))
+        #         continue
+        #     found = True
+        #     break
         
-        size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        print("Framebuffer size: %d x %d" % (size[0], size[1]))
+        os.putenv("SDL_VIDEODRIVER", "dummy")
+        os.putenv("SDL_AUDIODRIVER", "dummy")
+
+        pygame.display.init()
+        
+        # if not found:
+        #     raise Exception('No suitable video driver found!')
+
+    
+        # size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+        # print("Framebuffer size: %d x %d" % (size[0], size[1]))
+        size = (720, 480)
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
