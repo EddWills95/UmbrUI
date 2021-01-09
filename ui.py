@@ -20,6 +20,8 @@ row2_y = 280
 row3_y = 375
 
 class UmbrUI(fbscreen):
+    loaded = False
+
     def __init__(self):
         # Call parent constructor
         fbscreen.__init__(self)
@@ -42,6 +44,8 @@ class UmbrUI(fbscreen):
             
         pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
+        
+        self.loaded = True
 
     def init(self):
         pygame.init()
@@ -50,42 +54,46 @@ class UmbrUI(fbscreen):
         self.textFont = pygame.freetype.Font(bold_font, 32)
 
     def add_logo_and_text(self):
-        title = self.titleFont.render_to(self.screen, "umbrel", (110, 30))
+        title_surf, title_rect = self.titleFont.render("umbrel")
 
         umbrelImg = pygame.image.load('assets/logo.png')
         # pg.transform.rotozoom(IMAGE, 0, 2)
         umbrelImg = pygame.transform.scale(umbrelImg, (88, 100))
         
         self.screen.blit(umbrelImg, (16, 16))
-        # self.screen.blit(title, (110, 30))
+        self.screen.blit(title_surf, (110, 50))
 
     def add_qr_code(self):
         qrImg = generate_qr_code(get_ip())
         
         self.screen.blit(qrImg, (544, 16))
 
-    def build_info_section(self, heading, text, position):
-        heading = self.headingFont.render(heading)
-        text = self.textFont.render(text)
-        # self.screen.draw.text(heading, position)
-        # self.screen.draw.text()
+    def build_info_section(self, heading_text, text_text, position):
+        heading_surf, heading_rect = self.headingFont.render(heading_text, black)
+        text_surf, text_rect = self.textFont.render(text_text, black)
 
         x, y = position
-        self.screen.blit(heading, position)
-        self.screen.blit(text, (x, y + 25))
-        pygame.display.flip()
+        self.screen.blit(heading_surf, position)
+        self.screen.blit(text_surf, (x, y + 25))
+        pygame.display.update()
 
     def save_screenshot(self):
         pygame.display.flip() 
-        pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
+        pygame.image.save(self.screen, "./screenshots/UmbrUI.png")
         
 
 # Create an instance of the FBGame class
 game = UmbrUI()
 
 while True:
-    print('Printing image')
-    game.save_screenshot()
+    # Wait until all the elements have loaded the first time
+    if game.loaded:
+        print('Printing image')
+        # Take a screenshot
+        # We should add optimisations when we do data fetching
+        game.save_screenshot()
+        time.sleep(2)
+    
     for event in pygame.event.get():
     
         # if event object type is QUIT
@@ -97,7 +105,6 @@ while True:
 
             # quit the program.
             quit()
- 
-    time.sleep(2)
-    # Draws the surface object to the screen.
+     
+    # # Draws the surface object to the screen.
     pygame.display.update()
