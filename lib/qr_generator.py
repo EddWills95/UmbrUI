@@ -19,7 +19,7 @@ def generate_qr_code(data):
     img_rect = img.get_rect()
 
     # Load and scale mini image
-    mini_img = pygame.image.load(QR_mini_img).convert_alpha()
+    mini_img = pygame.image.load(QR_mini_img)
     mini_img = pygame.transform.scale(mini_img, (35, 35))
     
     mini_img_rect = mini_img.get_rect(center=(img_rect.width / 2, img_rect.height / 2))
