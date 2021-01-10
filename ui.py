@@ -20,9 +20,10 @@ class UmbrUI(fbscreen):
 
         self.add_logo_and_text()
         self.add_qr_code()
-        self.build_info_section("admin", get_ip(), (columns_x[0], rows_y[0]))
+        self.build_info_section("admin", get_ip(), (300, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
-        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (columns_x[1], rows_y[0]))
+        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (columns_x[0], rows_y[0]), 
+        pygame.font.Font(bold_font, 22))
 
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
