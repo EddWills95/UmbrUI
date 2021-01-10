@@ -1,10 +1,16 @@
 version: "3.9"
 services:
-  fbcp:
-    image: balenablocks/fbcp:waveshare35b-ili9486
-    privileged: true
   app:
     build: .
-    privileged: true
+    volumes:
+      - ./screenshots:/usr/screenshots
+  screen:
+    build: ./screen-driver
+    volumes:
+      - ./screenshots:/usr/screenshots
+    devices:
+      - "/dev/gpiomem:/dev/gpiomem"
+      - "/dev/spidev0.0:/dev/spidev0.0"
+      - "/dev/spidev0.1:/dev/spidev0.1"
     depends_on:
-      - fbcp
+      - app
