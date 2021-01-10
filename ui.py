@@ -62,13 +62,24 @@ class UmbrUI(fbscreen):
         
         self.screen.blit(qrImg, (544, 16))
 
-    def build_info_section(self, heading, text, position):
+    def build_info_section(self, heading, text, position, textfont=False, alignRight=False):
+        if(textfont == False):
+            textfont = self.textFont
         heading = self.headingFont.render(heading, True, black)
-        text = self.textFont.render(text, True, black)
+        text = textfont.render(text, True, black)
 
         x, y = position
-        self.screen.blit(heading, position)
-        self.screen.blit(text, (x, y + 25))
+        headingPosition = position
+        textPosition = (x, y + 25)
+        if(alignRight):
+            headingSize = heading.get_width()
+            textSize = text.get_width()
+            if(headingSize < textSize):
+                headingPosition = (x + textSize - headingSize, y)
+            else:
+                textPosition =  (x + headingSize - textSize, y + 25)
+        self.screen.blit(heading, headingPosition)
+        self.screen.blit(text, textPosition)
 
 
 # Create an instance of the FBGame class
