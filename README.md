@@ -9,7 +9,7 @@ Milestones:
 
 The goal is to be able to present the user with some helpful information such as: 
 - [ ] IP/TOR address 
-- [x] QR Code to link to url~~
+- [x] QR Code to link to url
 - [ ] Funds Status
 - [ ] How many channels
 - [ ] Forwards in the last 24hrs
