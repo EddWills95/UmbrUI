@@ -8,7 +8,8 @@ Milestones:
 - [x] Use SPI screen without needing higher privileges
 
 The goal is to be able to present the user with some helpful information such as: 
-- [ ] IP/TOR address 
+- [x] IP address 
+- [ ] TOR address 
 - [x] QR Code to link to url
 - [ ] Funds Status
 - [ ] How many channels
