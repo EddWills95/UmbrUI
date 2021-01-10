@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - ./screenshots:/usr/screenshots
+    network_mode: host
   screen:
     build: ./screen-driver
     volumes:
