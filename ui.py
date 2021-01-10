@@ -57,7 +57,6 @@ class UmbrUI(fbscreen):
         title_surf, title_rect = self.titleFont.render("umbrel")
 
         umbrelImg = pygame.image.load('assets/logo.png')
-        # pg.transform.rotozoom(IMAGE, 0, 2)
         umbrelImg = pygame.transform.scale(umbrelImg, (88, 100))
         
         self.screen.blit(umbrelImg, (16, 16))
@@ -85,26 +84,32 @@ class UmbrUI(fbscreen):
 # Create an instance of the FBGame class
 game = UmbrUI()
 
-while True:
-    # Wait until all the elements have loaded the first time
-    if game.loaded:
-        print('Printing image')
-        # Take a screenshot
-        # We should add optimisations when we do data fetching
-        game.save_screenshot()
-        time.sleep(2)
-    
-    for event in pygame.event.get():
-    
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
+print("Taking screenshot")
+game.save_screenshot()
 
-            # quit the program.
-            quit()
+pygame.quit()
+exit()
+
+# while True:
+#     # Wait until all the elements have loaded the first time
+#     if game.loaded:
+#         print('Printing image')
+#         # Take a screenshot
+#         # We should add optimisations when we do data fetching
+#         game.save_screenshot()
+#         time.sleep(2)
+    
+#     for event in pygame.event.get():
+    
+#         # if event object type is QUIT
+#         # then quitting the pygame
+#         # and program both.
+#         if event.type == pygame.QUIT:
+#             # deactivates the pygame library
+#             pygame.quit()
+
+#             # quit the program.
+#             quit()
      
-    # # Draws the surface object to the screen.
-    pygame.display.update()
+#     # # Draws the surface object to the screen.
+#     pygame.display.update()
