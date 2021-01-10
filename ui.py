@@ -2,20 +2,25 @@
 import pygame
 import pygame.freetype
 import time
+import os
 
-from lib.pygamefb import fbscreen
+# Local libraries
 from lib.network import get_ip
 from lib.qr_generator import generate_qr_code
 
 from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 
-class UmbrUI(fbscreen):
+class UmbrUI():
     loaded = False
 
     def __init__(self):
-        # Call parent constructor
-        fbscreen.__init__(self)
-        
+        os.putenv("SDL_VIDEODRIVER", "dummy")
+        os.putenv("SDL_AUDIODRIVER", "dummy")
+
+        pygame.display.init()
+        size = (720, 480)
+        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+
         # Set background color to umbrel
         self.screen.fill(background_color)
 
@@ -82,7 +87,7 @@ class UmbrUI(fbscreen):
         pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
         
 
-# Create an instance of the FBGame class
+# Create an instance of the UmbrUI class
 game = UmbrUI()
 
 print("Taking screenshot")
