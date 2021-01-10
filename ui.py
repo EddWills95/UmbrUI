@@ -28,7 +28,7 @@ class UmbrUI():
 
         self.add_logo_and_text()
         self.add_qr_code()
-        self.build_info_section("admin", get_ip(), (300, 120), False, True)
+        self.build_info_section("admin", get_ip(), (520, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
         self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (columns_x[0], rows_y[0]), 
         pygame.freetype.Font(bold_font, 22))
@@ -64,23 +64,22 @@ class UmbrUI():
         self.screen.blit(qrImg, (544, 16))
 
     def build_info_section(self, heading_text, text_text, position, textfont=False, alignRight=False):
-        if(textfont == False):
+        if textfont == False:
             textfont = self.textFont
         heading_surf, heading_rect = self.headingFont.render(heading_text, black)
         text_surf, text_rect = textfont.render(text_text, black)
 
         x, y = position
-        headingPosition = position
-        textPosition = (x, y + 25)
-        if(alignRight):
-            headingSize = heading_surf.get_width()
-            textSize = text_surf.get_width()
-            if(headingSize < textSize):
-                headingPosition = (x + textSize - headingSize, y)
-            else:
-                textPosition =  (x + headingSize - textSize, y + 25)
-        self.screen.blit(heading_surf, headingPosition)
-        self.screen.blit(text_surf, textPosition)
+        heading_rect.topleft = position
+        text_rect.topleft = (x, y + 25)
+        
+        if alignRight:
+            heading_rect.topright = (x, y)
+            text_rect.topright = (x, y + 25)
+
+
+        self.screen.blit(heading_surf, heading_rect)
+        self.screen.blit(text_surf, text_rect)
 
     def save_screenshot(self):
         pygame.display.flip() 
