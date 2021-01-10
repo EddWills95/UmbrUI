@@ -1,27 +1,26 @@
+# Libraries provided by the system
 import pygame
+import pygame.freetype
 import time
+import os
 
-from lib.pygamefb import fbscreen
+# Local libraries
 from lib.network import get_ip
 from lib.qr_generator import generate_qr_code
 
-black = (0, 0, 0)
-background_color = (247,249,251)
-bold_font = 'assets/Roboto-Bold.ttf'
-light_font = 'assets/Roboto-Light.ttf'
+from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 
-col1_x = 20
-col2_x = 240
-col3_x = 480
-row1_y = 185
-row2_y = 280
-row3_y = 375
+class UmbrUI():
+    loaded = False
 
-class UmbrUI(fbscreen):
     def __init__(self):
-        # Call parent constructor
-        fbscreen.__init__(self)
-        
+        os.putenv("SDL_VIDEODRIVER", "dummy")
+        os.putenv("SDL_AUDIODRIVER", "dummy")
+
+        pygame.display.init()
+        size = (720, 480)
+        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+
         # Set background color to umbrel
         self.screen.fill(background_color)
 
@@ -29,64 +28,94 @@ class UmbrUI(fbscreen):
 
         self.add_logo_and_text()
         self.add_qr_code()
-        self.build_info_section("admin", get_ip(), (col1_x, row1_y))
+        self.build_info_section("admin", get_ip(), (300, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
-        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (col2_x, row1_y))
+        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (columns_x[0], rows_y[0]), 
+        pygame.freetype.Font(bold_font, 22))
 
-        self.build_info_section("Max Send", "3M Sats", (col1_x, row2_y))
-        self.build_info_section("Max Recieve", "2M Sats", (col2_x, row2_y))
-        self.build_info_section("Active Channels", "16", (col3_x, row2_y))
-        self.build_info_section("24H Forwards", "53", (col1_x, row3_y))
+        self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
+        self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
+        self.build_info_section("Active Channels", "16", (columns_x[2], rows_y[1]))
+        self.build_info_section("24H Forwards", "53", (columns_x[0], rows_y[2]))
             
         pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
+        
+        self.loaded = True
 
     def init(self):
         pygame.init()
-        self.titleFont = pygame.font.Font(bold_font, 56)
-        self.headingFont = pygame.font.Font(light_font, 18)
-        self.textFont = pygame.font.Font(bold_font, 32)
+        self.titleFont = pygame.freetype.Font(bold_font, 56)
+        self.headingFont = pygame.freetype.Font(light_font, 18)
+        self.textFont = pygame.freetype.Font(bold_font, 32)
 
     def add_logo_and_text(self):
-        title = self.titleFont.render("umbrel", True, black)
+        title_surf, title_rect = self.titleFont.render("umbrel")
 
         umbrelImg = pygame.image.load('assets/logo.png')
-        # pg.transform.rotozoom(IMAGE, 0, 2)
         umbrelImg = pygame.transform.scale(umbrelImg, (88, 100))
         
         self.screen.blit(umbrelImg, (16, 16))
-        self.screen.blit(title, (110, 30))
+        self.screen.blit(title_surf, (110, 50))
 
     def add_qr_code(self):
         qrImg = generate_qr_code(get_ip())
         
         self.screen.blit(qrImg, (544, 16))
 
-    def build_info_section(self, heading, text, position):
-        heading = self.headingFont.render(heading, True, black)
-        text = self.textFont.render(text, True, black)
+    def build_info_section(self, heading_text, text_text, position, textfont=False, alignRight=False):
+        if(textfont == False):
+            textfont = self.textFont
+        heading_surf, heading_rect = self.headingFont.render(heading_text, black)
+        text_surf, text_rect = textfont.render(text_text, black)
 
         x, y = position
-        self.screen.blit(heading, position)
-        self.screen.blit(text, (x, y + 25))
+        headingPosition = position
+        textPosition = (x, y + 25)
+        if(alignRight):
+            headingSize = heading_surf.get_width()
+            textSize = text_surf.get_width()
+            if(headingSize < textSize):
+                headingPosition = (x + textSize - headingSize, y)
+            else:
+                textPosition =  (x + headingSize - textSize, y + 25)
+        self.screen.blit(heading_surf, headingPosition)
+        self.screen.blit(text_surf, textPosition)
 
+    def save_screenshot(self):
+        pygame.display.flip() 
+        pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
+        
 
-# Create an instance of the FBGame class
+# Create an instance of the UmbrUI class
 game = UmbrUI()
 
-while True:
-    for event in pygame.event.get():
-    
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
+print("Taking screenshot")
+game.save_screenshot()
 
-            # quit the program.
-            quit()
- 
-    time.sleep(2)
-    # Draws the surface object to the screen.
-    pygame.display.update()
+pygame.quit()
+exit()
+
+# while True:
+#     # Wait until all the elements have loaded the first time
+#     if game.loaded:
+#         print('Printing image')
+#         # Take a screenshot
+#         # We should add optimisations when we do data fetching
+#         game.save_screenshot()
+#         time.sleep(2)
+    
+#     for event in pygame.event.get():
+    
+#         # if event object type is QUIT
+#         # then quitting the pygame
+#         # and program both.
+#         if event.type == pygame.QUIT:
+#             # deactivates the pygame library
+#             pygame.quit()
+
+#             # quit the program.
+#             quit()
+     
+#     # # Draws the surface object to the screen.
+#     pygame.display.update()
