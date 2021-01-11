@@ -5,3 +5,6 @@ __pycache__
 screenshots
 
 .python-version
+
+lnd/*
+!lnd/.gitkeep
