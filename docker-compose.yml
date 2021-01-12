@@ -6,7 +6,7 @@ services:
       - ./screenshots:/usr/screenshots
     network_mode: host
   screen:
-    build: ./screen-driver
+    image: eddwills95/umbrui-renderer:main
     volumes:
       - ./screenshots:/usr/screenshots
     devices:
