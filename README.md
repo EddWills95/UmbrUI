@@ -6,6 +6,9 @@
 
 Milestones:
 - [x] Use SPI screen without needing higher privileges
+- [ ] Connect to BTC & LND services
+- [ ] Allow user to set screen size
+- [ ] Allow user to chose what is displayed
 
 The goal is to be able to present the user with some helpful information such as: 
 - [x] IP address 
@@ -14,6 +17,7 @@ The goal is to be able to present the user with some helpful information such as
 - [ ] Funds Status
 - [ ] How many channels
 - [ ] Forwards in the last 24hrs
+- [ ] Sync status
 
 Early doors figma: https://www.figma.com/file/nPWWBp3BCrX71FmxRNnj1M/UmbrUI?node-id=0%3A1
 
