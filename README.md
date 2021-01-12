@@ -4,12 +4,16 @@
 - This is still very early stages 
 - Intended to be run as part of the Umbrel App system (hence the docker-compose)
 
+Milestones:
+- [x] Use SPI screen without needing higher privileges
+
 The goal is to be able to present the user with some helpful information such as: 
-- IP/TOR address 
-- QR Code to link to url
-- Funds Status
-- How many channels
-- Forwards in the last 24hrs
+- [x] IP address 
+- [ ] TOR address 
+- [x] QR Code to link to url
+- [ ] Funds Status
+- [ ] How many channels
+- [ ] Forwards in the last 24hrs
 
 Early doors figma: https://www.figma.com/file/nPWWBp3BCrX71FmxRNnj1M/UmbrUI?node-id=0%3A1
 
