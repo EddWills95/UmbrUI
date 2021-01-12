@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   app:
-    build: .
+    image: eddwills95/umbrui:main
     volumes:
       - ./screenshots:/usr/screenshots
     network_mode: host
