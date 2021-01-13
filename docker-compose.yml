@@ -2,8 +2,12 @@ version: "3.9"
 services:
   app:
     image: eddwills95/umbrui:main
+    # Allows building on the Pi easily
+    # build: 
+    #   context: ./umbrui
     volumes:
       - ./screenshots:/usr/screenshots
+      - ${APP_DATA_DIR}/../../tor/data/web/hostname:/usr/tor_hostname
     network_mode: host
   screen:
     image: eddwills95/umbrui-renderer:main

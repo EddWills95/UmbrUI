@@ -5,7 +5,7 @@ import time
 import os
 
 # Local libraries
-from lib.network import get_ip
+from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
 
 from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
@@ -30,8 +30,8 @@ class UmbrUI():
         self.add_qr_code()
         self.build_info_section("admin", get_ip(), (520, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
-        self.build_info_section("tor", "r7cckasdfasfdargsnf4eoxaivgiykmrcglhg4zlwueknhuw66otiid.onion", (columns_x[0], rows_y[0]), 
-        pygame.freetype.Font(bold_font, 22))
+        self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), 
+        self.smallTextFont)
 
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
@@ -48,6 +48,7 @@ class UmbrUI():
         self.titleFont = pygame.freetype.Font(bold_font, 56)
         self.headingFont = pygame.freetype.Font(light_font, 18)
         self.textFont = pygame.freetype.Font(bold_font, 32)
+        self.smallTextFont = pygame.freetype.Font(bold_font, 20)
 
     def add_logo_and_text(self):
         title_surf, title_rect = self.titleFont.render("umbrel")
