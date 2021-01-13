@@ -1,8 +1,8 @@
 ## UmbrUI (Umb-roo-eee)
 ### [Umbrel](https://github.com/getumbrel/umbrel) UI developed for 3.5" GPIO screens
 
-- This is still very early stages 
 - Intended to be run as part of the Umbrel App system (hence the docker-compose)
+- See [Renderer](https://github.com/EddWills95/UmbrUI-Renderer) for SPI screen image
 
 Milestones:
 - [x] Use SPI screen without needing higher privileges
