@@ -11,3 +11,7 @@ def get_ip():
         s.close()
     return IP
 
+def get_tor_address():
+    address = open("/app/tor_hostname", "r")
+    return address.read()
+
