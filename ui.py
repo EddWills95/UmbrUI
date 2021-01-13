@@ -89,32 +89,31 @@ class UmbrUI():
 # Create an instance of the UmbrUI class
 game = UmbrUI()
 
-print("Taking screenshot")
+# Take initial screenshot
+print("Taking initial screenshot")
 game.save_screenshot()
 
-pygame.quit()
-exit()
-
-# while True:
-#     # Wait until all the elements have loaded the first time
-#     if game.loaded:
-#         print('Printing image')
-#         # Take a screenshot
-#         # We should add optimisations when we do data fetching
-#         game.save_screenshot()
-#         time.sleep(2)
+while True:
+    # Wait until all the elements have loaded the first time
+    if game.loaded:
+        # Take a screenshot
+        print('Printing image')
+        # We should add optimisations when we do data fetching to only take one when things have changed
+        game.save_screenshot()
+        # We should set this at some point to something reasonable
+        time.sleep(10)
     
-#     for event in pygame.event.get():
+    for event in pygame.event.get():
     
-#         # if event object type is QUIT
-#         # then quitting the pygame
-#         # and program both.
-#         if event.type == pygame.QUIT:
-#             # deactivates the pygame library
-#             pygame.quit()
+        # if event object type is QUIT
+        # then quitting the pygame
+        # and program both.
+        if event.type == pygame.QUIT:
+            # deactivates the pygame library
+            pygame.quit()
 
-#             # quit the program.
-#             quit()
+            # quit the program.
+            quit()
      
-#     # # Draws the surface object to the screen.
-#     pygame.display.update()
+    # # Draws the surface object to the screen.
+    pygame.display.update()
