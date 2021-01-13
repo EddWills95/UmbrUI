@@ -34,3 +34,12 @@ On Pi:
 python3 ui.py
 ```
 
+The googleapis submodule is only needed for the generation of some python files.
+You don't need it normally while using or developing this app, except when adding a new feature that requires a newer version of LND.
+If that's the case, first update the rpc.proto to the version from the latest LND, then run:
+```
+
+```
+
+rpc.proto is available at https://github.com/lightningnetwork/lnd/blob/master/lnrpc/rpc.proto.
+Please don't use the file from a later version of LND than the one currently used in Umbrel to avoid issues.
