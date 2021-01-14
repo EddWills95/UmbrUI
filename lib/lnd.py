@@ -6,6 +6,7 @@ from time import sleep
 import lib.rpc_pb2 as lnrpc
 import lib.rpc_pb2_grpc as rpc_stub
 
+from lib.utils import human_format
 
 # def check_lnd():
     # try:
@@ -66,3 +67,20 @@ class LndGRPC:
         except:
             return "0"
 
+    def get_max_send(self):
+        response = self.stub.ChannelBalance(lnrpc.ChannelBalanceRequest(), metadata=self.metadata)
+        sats = "0"
+        try:
+            sats = human_format(response.local_balance)
+        except:
+            sats = "0"
+        return sats + " Sats"
+
+    def get_max_receieve(self):
+        response = self.stub.ChannelBalance(lnrpc.ChannelBalanceRequest(), metadata=self.metadata)
+        sats = "0"
+        try:
+            sats = human_format(response.remote_balance)
+        except:
+            sats = "0"
+        return sats + " Sats"

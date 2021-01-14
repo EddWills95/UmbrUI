@@ -59,8 +59,8 @@ class UmbrUI():
         # print(forwardresponse)
         # print(btcresponse)
 
-        self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
-        self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
+        self.build_info_section("Max Send", self.lnd_grpc.get_max_send(), (columns_x[0], rows_y[1]))
+        self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
         self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
         self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
         # self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
@@ -128,37 +128,32 @@ print("Connection to bitcoin core established.")
 
 # Create an instance of the UmbrUI class
 game = UmbrUI()
-time.sleep(2)
-# game.warnUI()
-# Take initial screenshot
-# print("Taking initial screenshot")
-# game.save_screenshot()
-# check_lnd()
+time.sleep(1)
+
+# Load mainUI
 game.mainUI()
-print("Taking screenshot")
-game.save_screenshot()
 
-# while True:
-#     # Wait until all the elements have loaded the first time
-#     if game.loaded:
-#         # Take a screenshot
-#         print('Printing image')
-#         # We should add optimisations when we do data fetching to only take one when things have changed
-#         game.save_screenshot()
-#         # We should set this at some point to something reasonable
-#         time.sleep(10)
+while True:
+    # Wait until all the elements have loaded the first time
+    if game.loaded:
+        # Take a screenshot
+        print('Printing image')
+        # We should add optimisations when we do data fetching to only take one when things have changed
+        game.save_screenshot()
+        # We should set this at some point to something reasonable
+        time.sleep(10)
     
-#     for event in pygame.event.get():
+    for event in pygame.event.get():
     
-#         # if event object type is QUIT
-#         # then quitting the pygame
-#         # and program both.
-#         if event.type == pygame.QUIT:
-#             # deactivates the pygame library
-#             pygame.quit()
+        # if event object type is QUIT
+        # then quitting the pygame
+        # and program both.
+        if event.type == pygame.QUIT:
+            # deactivates the pygame library
+            pygame.quit()
 
-#             # quit the program.
-#             quit()
+            # quit the program.
+            quit()
      
-#     # # Draws the surface object to the screen.
-#     pygame.display.update()
+    # # Draws the surface object to the screen.
+    pygame.display.update()
