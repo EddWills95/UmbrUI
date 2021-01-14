@@ -118,25 +118,3 @@ class UmbrUI():
         self.build_info_section("", "You haven't opened the Umbrel dashboard yet.", (columns_x[0], rows_y[0]))
         self.build_info_section("", "Please do that first to access this screen.", (columns_x[0], rows_y[1] - 70))
         pygame.display.update()
-
-# while True:
-#     # Wait until all the elements have loaded the first time
-#     if game.loaded:
-#         # Take a screenshot
-#         print('Printing image')
-#         # We should add optimisations when we do data fetching to only take one when things have changed
-#         game.save_screenshot()
-#         # We should set this at some point to something reasonable
-#         time.sleep(10)
-    
-#     for event in pygame.event.get():
-    
-#         # if event object type is QUIT
-#         # then quitting the pygame
-#         # and program both.
-#         if event.type == pygame.QUIT:
-#             # deactivates the pygame library
-#             pygame.quit()
-
-#             # quit the program.
-#             quit()

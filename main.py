@@ -1,5 +1,6 @@
 from time import sleep
 from threading import Event
+import pygame
 
 from umbrui import UmbrUI
 
@@ -37,7 +38,9 @@ def main():
 
 def quit(signo, _frame):
     print("Interrupted by %d, shutting down" % signo)
-    exit.set()    
+    pygame.quit()
+    exit.set()
+    quit()    
 
 if __name__ == '__main__':
 
