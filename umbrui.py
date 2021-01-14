@@ -15,7 +15,7 @@ from consts import black, background_color, bold_font, light_font, columns_x, ro
 from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
 from lib.lnd import LndGRPC
-from lib.btc import BtcGRPC
+from lib.btc import BtcRPC
 import lib.rpc_pb2 as ln
 import lib.rpc_pb2_grpc as lnrpc
 
@@ -29,8 +29,8 @@ class UmbrUI():
 
         self.init_screen()
         
-        # Init GRPC connections
-        self.btc_grpc = BtcGRPC()
+        # Init RPC connections
+        self.btc_grpc = BtcRPC()
         self.lnd_grpc = LndGRPC()
 
     # Sets up the basic view without elements

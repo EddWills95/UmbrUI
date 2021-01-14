@@ -2,7 +2,7 @@ import os
 
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
   
-class BtcGRPC:
+class BtcRPC:
     def __init__(self):
         btcurl = "http://%s:%s@%s:%s"%(os.getenv('BITCOIN_RPC_USER'), os.getenv('BITCOIN_RPC_PASS'), os.getenv('BITCOIN_IP'), os.getenv('BITCOIN_RPC_PORT'))
         self.connection = AuthServiceProxy(btcurl)
