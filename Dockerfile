@@ -1,4 +1,4 @@
-FROM aarondewes/pygame-grpc-base:main
+FROM aarondewes/python-grpc:main
 
 # Runtime dependencies of pygame
 RUN apt-get install fonts-freefont-ttf libc6 libfreetype6 libjpeg8 libpng16-16 libportmidi0 libsdl-image1.2 libsdl-mixer1.2 libsdl-ttf2.0-0 libsdl1.2debian libx11-6
