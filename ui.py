@@ -41,6 +41,9 @@ class UmbrUI():
         self.textFont = pygame.freetype.Font(bold_font, 32)
         self.smallTextFont = pygame.freetype.Font(bold_font, 20)
         self.add_logo_and_text()
+        
+        print("Taking Initial Screenshot")
+        self.save_screenshot()
 
     # Adds dynamic data to the rest of the screen
     def mainUI(self):
@@ -58,7 +61,7 @@ class UmbrUI():
 
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
-        # self.build_info_section("Active Channels", str(response.num_active_channels), (columns_x[2], rows_y[1]))
+        self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
         self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
         # self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
             

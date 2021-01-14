@@ -45,6 +45,19 @@ class LndGRPC:
                 macaroon = codecs.encode(macaroon_bytes, 'hex')
         return macaroon
 
+    def get_active_channels(self):
+        response = self.stub.ListChannels(
+            lnrpc.ListChannelsRequest(
+                active_only=True
+            ), 
+            metadata=self.metadata
+        )
+        try:
+            return str(len(response.channels))
+        except:
+            return "0"
+            
+
     # Returns the forwarding events of the last 24H
     def get_forwarding_events(self):
         response = self.stub.ForwardingHistory(lnrpc.ForwardingHistoryRequest(), metadata=self.metadata)        
