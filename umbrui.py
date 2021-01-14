@@ -49,7 +49,7 @@ class UmbrUI():
         self.textFont = pygame.freetype.Font(bold_font, 32)
         self.smallTextFont = pygame.freetype.Font(bold_font, 20)
 
-    # Builds static data (log, ip, qr and tor)
+    # Builds static data (logo, ip, qr and tor)
     def mainUI(self):
         self.add_logo_and_text()
         self.add_qr_code()
