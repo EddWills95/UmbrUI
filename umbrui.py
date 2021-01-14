@@ -3,6 +3,8 @@ import pygame
 import pygame.freetype
 import time
 import os
+
+# RPC
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import grpc
 
@@ -13,6 +15,7 @@ from consts import black, background_color, bold_font, light_font, columns_x, ro
 from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
 from lib.lnd import LndGRPC
+from lib.btc import BtcRPC
 import lib.rpc_pb2 as ln
 import lib.rpc_pb2_grpc as lnrpc
 
@@ -26,49 +29,52 @@ class UmbrUI():
 
         self.init_screen()
         
-        # Init GRPC connections
+        # Init RPC connections
+        self.btc_grpc = BtcRPC()
         self.lnd_grpc = LndGRPC()
 
-    # Sets up the basic view without data
+    # Sets up the basic view without elements
     def init_screen(self):
+        # PyGame
         pygame.init()
         pygame.display.init()
+        pygame.display.set_caption("UmbrUI")
         size = (720, 480)
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
         self.screen.fill(background_color)
+        
+        # Fonts
         self.titleFont = pygame.freetype.Font(bold_font, 56)
         self.headingFont = pygame.freetype.Font(light_font, 18)
         self.textFont = pygame.freetype.Font(bold_font, 32)
         self.smallTextFont = pygame.freetype.Font(bold_font, 20)
-        self.add_logo_and_text()
-        
-        print("Taking Initial Screenshot")
-        self.save_screenshot()
 
-    # Adds dynamic data to the rest of the screen
+    # Builds static data (logo, ip, qr and tor)
     def mainUI(self):
+        self.add_logo_and_text()
         self.add_qr_code()
         self.build_info_section("admin", get_ip(), (520, 120), False, True)
-        # Tor is always going to be really long so not sure about this one ... :/
-        self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), 
-        self.smallTextFont)
+        self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), self.smallTextFont)
+        
+        pygame.display.update() 
 
-        # btcresponse = rpc_connection.getblockchaininfo()
+        print("Saving screenshot of static elements")
+        self.save_screenshot() 
 
-        # print(response)
-        # print(forwardresponse)
-        # print(btcresponse)
+        self.loaded = True
 
+    # Get/refresh all elements that can be updated
+    def load_updatable_elements(self):
         self.build_info_section("Max Send", self.lnd_grpc.get_max_send(), (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
         self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
         self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
         # self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
-            
-        pygame.display.set_caption("UmbrUI")
-        pygame.display.update() 
         
-        self.loaded = True
+        pygame.display.update() 
+
+        print("Saving updated screenshot")
+        self.save_screenshot()
 
     def add_logo_and_text(self):
         title_surf, title_rect = self.titleFont.render("umbrel")
@@ -102,6 +108,7 @@ class UmbrUI():
         self.screen.blit(heading_surf, heading_rect)
         self.screen.blit(text_surf, text_rect)
 
+    # When we move away from SPI screen we will not need this
     def save_screenshot(self):
         pygame.display.flip() 
         pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
@@ -111,49 +118,3 @@ class UmbrUI():
         self.build_info_section("", "You haven't opened the Umbrel dashboard yet.", (columns_x[0], rows_y[0]))
         self.build_info_section("", "Please do that first to access this screen.", (columns_x[0], rows_y[1] - 70))
         pygame.display.update()
-        
-
-# Try to connect to bitcoin RPC and get data
-try:
-    btcurl = "http://%s:%s@%s:%s"%(os.getenv('BITCOIN_RPC_USER'), os.getenv('BITCOIN_RPC_PASS'), os.getenv('BITCOIN_IP'), os.getenv('BITCOIN_RPC_PORT'))
-    rpc_connection = AuthServiceProxy(btcurl)
-    rpc_connection.getblockchaininfo()
-except Exception:
-    print("Please make sure BITCOIN_RPC_PORT, BITCOIN_RPC_PASS, BITCOIN_IP and BITCOIN_RPC_PORT are set and valid")
-    exit(1)
-
-btcurl = "http://%s:%s@%s:%s"%(os.getenv('BITCOIN_RPC_USER'), os.getenv('BITCOIN_RPC_PASS'), os.getenv('BITCOIN_IP'), os.getenv('BITCOIN_RPC_PORT'))
-rpc_connection = AuthServiceProxy(btcurl)
-print("Connection to bitcoin core established.")
-
-# Create an instance of the UmbrUI class
-game = UmbrUI()
-time.sleep(1)
-
-# Load mainUI
-game.mainUI()
-
-while True:
-    # Wait until all the elements have loaded the first time
-    if game.loaded:
-        # Take a screenshot
-        print('Printing image')
-        # We should add optimisations when we do data fetching to only take one when things have changed
-        game.save_screenshot()
-        # We should set this at some point to something reasonable
-        time.sleep(10)
-    
-    for event in pygame.event.get():
-    
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
-
-            # quit the program.
-            quit()
-     
-    # # Draws the surface object to the screen.
-    pygame.display.update()
