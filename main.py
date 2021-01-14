@@ -49,3 +49,4 @@ if __name__ == '__main__':
         signal.signal(getattr(signal, 'SIG'+sig), quit);
 
     main()
+    

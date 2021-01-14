@@ -17,3 +17,4 @@ class BtcGRPC:
     def get_blockchain_info(self):
         response = self.connection.getblockchaininfo()
         return response
+    
