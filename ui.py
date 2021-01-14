@@ -12,9 +12,10 @@ from consts import black, background_color, bold_font, light_font, columns_x, ro
 # Local libraries
 from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
-from lib.lnd import get_stub, get_macaroon, check_lnd
+from lib.lnd import LndGRPC
 import lib.rpc_pb2 as ln
 import lib.rpc_pb2_grpc as lnrpc
+
 
 class UmbrUI():
     loaded = False
@@ -23,54 +24,48 @@ class UmbrUI():
         os.putenv("SDL_VIDEODRIVER", "dummy")
         os.putenv("SDL_AUDIODRIVER", "dummy")
 
+        self.init_screen()
+        
+        # Init GRPC connections
+        self.lnd_grpc = LndGRPC()
+
+    # Sets up the basic view without data
+    def init_screen(self):
+        pygame.init()
         pygame.display.init()
         size = (720, 480)
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-
-        # Set background color to umbrel
         self.screen.fill(background_color)
+        self.titleFont = pygame.freetype.Font(bold_font, 56)
+        self.headingFont = pygame.freetype.Font(light_font, 18)
+        self.textFont = pygame.freetype.Font(bold_font, 32)
+        self.smallTextFont = pygame.freetype.Font(bold_font, 20)
+        self.add_logo_and_text()
 
-        self.init()
-
+    # Adds dynamic data to the rest of the screen
     def mainUI(self):
-        self.screen.fill(background_color)
-        self.init()
         self.add_qr_code()
         self.build_info_section("admin", get_ip(), (520, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
         self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), 
         self.smallTextFont)
 
-        stub = get_stub()
-        metadata = [('macaroon',get_macaroon())]
+        # btcresponse = rpc_connection.getblockchaininfo()
 
-        response = stub.GetInfo(ln.GetInfoRequest(), metadata=metadata)
-        forwardresponse = stub.GetInfo(ln.ForwardingHistoryRequest(), metadata=metadata)
-
-        btcresponse = rpc_connection.getblockchaininfo()
-
-        print(response)
-        print(forwardresponse)
-        print(btcresponse)
+        # print(response)
+        # print(forwardresponse)
+        # print(btcresponse)
 
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
-        self.build_info_section("Active Channels", str(response.num_active_channels), (columns_x[2], rows_y[1]))
-        self.build_info_section("24H Forwards", str(len(forwardresponse.forwarding_events)), (columns_x[0], rows_y[2]))
-        self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
+        # self.build_info_section("Active Channels", str(response.num_active_channels), (columns_x[2], rows_y[1]))
+        self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
+        # self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
             
         pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
         
         self.loaded = True
-
-    def init(self):
-        pygame.init()
-        self.titleFont = pygame.freetype.Font(bold_font, 56)
-        self.headingFont = pygame.freetype.Font(light_font, 18)
-        self.textFont = pygame.freetype.Font(bold_font, 32)
-        self.smallTextFont = pygame.freetype.Font(bold_font, 20)
-        self.add_logo_and_text()
 
     def add_logo_and_text(self):
         title_surf, title_rect = self.titleFont.render("umbrel")
@@ -133,34 +128,34 @@ game = UmbrUI()
 time.sleep(2)
 # game.warnUI()
 # Take initial screenshot
-print("Taking initial screenshot")
-game.save_screenshot()
-check_lnd()
+# print("Taking initial screenshot")
+# game.save_screenshot()
+# check_lnd()
 game.mainUI()
 print("Taking screenshot")
 game.save_screenshot()
 
-while True:
-    # Wait until all the elements have loaded the first time
-    if game.loaded:
-        # Take a screenshot
-        print('Printing image')
-        # We should add optimisations when we do data fetching to only take one when things have changed
-        game.save_screenshot()
-        # We should set this at some point to something reasonable
-        time.sleep(10)
+# while True:
+#     # Wait until all the elements have loaded the first time
+#     if game.loaded:
+#         # Take a screenshot
+#         print('Printing image')
+#         # We should add optimisations when we do data fetching to only take one when things have changed
+#         game.save_screenshot()
+#         # We should set this at some point to something reasonable
+#         time.sleep(10)
     
-    for event in pygame.event.get():
+#     for event in pygame.event.get():
     
-        # if event object type is QUIT
-        # then quitting the pygame
-        # and program both.
-        if event.type == pygame.QUIT:
-            # deactivates the pygame library
-            pygame.quit()
+#         # if event object type is QUIT
+#         # then quitting the pygame
+#         # and program both.
+#         if event.type == pygame.QUIT:
+#             # deactivates the pygame library
+#             pygame.quit()
 
-            # quit the program.
-            quit()
+#             # quit the program.
+#             quit()
      
-    # # Draws the surface object to the screen.
-    pygame.display.update()
+#     # # Draws the surface object to the screen.
+#     pygame.display.update()
