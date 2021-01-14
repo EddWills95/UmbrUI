@@ -3,4 +3,4 @@ WORKDIR /app
 
 COPY . .
 # RUN ["python3", "--version"]
-CMD ["python3", "ui.py"]
+CMD ["python3", "-u", "ui.py"]
