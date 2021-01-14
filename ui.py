@@ -6,11 +6,13 @@ import os
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import grpc
 
+# Consts
+from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
+
 # Local libraries
 from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
 from lib.lnd import get_stub, get_macaroon, check_lnd
-from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 import lib.rpc_pb2 as ln
 import lib.rpc_pb2_grpc as lnrpc
 
@@ -42,10 +44,14 @@ class UmbrUI():
         stub = get_stub()
         metadata = [('macaroon',get_macaroon())]
 
-        response = stub.GetInfo(ln.GetInfoRequest(),metadata=metadata)
-        forwardresponse = stub.GetInfo(ln.ForwardingHistoryRequest(),metadata=metadata)
+        response = stub.GetInfo(ln.GetInfoRequest(), metadata=metadata)
+        forwardresponse = stub.GetInfo(ln.ForwardingHistoryRequest(), metadata=metadata)
 
         btcresponse = rpc_connection.getblockchaininfo()
+
+        print(response)
+        print(forwardresponse)
+        print(btcresponse)
 
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
@@ -124,7 +130,8 @@ print("Connection to bitcoin core established.")
 
 # Create an instance of the UmbrUI class
 game = UmbrUI()
-game.warnUI()
+time.sleep(2)
+# game.warnUI()
 # Take initial screenshot
 print("Taking initial screenshot")
 game.save_screenshot()
