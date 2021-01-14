@@ -3,12 +3,16 @@ import pygame
 import pygame.freetype
 import time
 import os
+from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
+import grpc
 
 # Local libraries
 from lib.network import get_ip, get_tor_address
 from lib.qr_generator import generate_qr_code
-
+from lib.lnd import get_stub, get_macaroon, check_lnd
 from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
+import lib.rpc_pb2 as ln
+import lib.rpc_pb2_grpc as lnrpc
 
 class UmbrUI():
     loaded = False
@@ -26,17 +30,28 @@ class UmbrUI():
 
         self.init()
 
-        self.add_logo_and_text()
+    def mainUI(self):
+        self.screen.fill(background_color)
+        self.init()
         self.add_qr_code()
         self.build_info_section("admin", get_ip(), (520, 120), False, True)
         # Tor is always going to be really long so not sure about this one ... :/
         self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), 
         self.smallTextFont)
 
+        stub = get_stub()
+        metadata = [('macaroon',get_macaroon())]
+
+        response = stub.GetInfo(ln.GetInfoRequest(),metadata=metadata)
+        forwardresponse = stub.GetInfo(ln.ForwardingHistoryRequest(),metadata=metadata)
+
+        btcresponse = rpc_connection.getblockchaininfo()
+
         self.build_info_section("Max Send", "3M Sats", (columns_x[0], rows_y[1]))
         self.build_info_section("Max Recieve", "2M Sats", (columns_x[1], rows_y[1]))
-        self.build_info_section("Active Channels", "16", (columns_x[2], rows_y[1]))
-        self.build_info_section("24H Forwards", "53", (columns_x[0], rows_y[2]))
+        self.build_info_section("Active Channels", str(response.num_active_channels), (columns_x[2], rows_y[1]))
+        self.build_info_section("24H Forwards", str(len(forwardresponse.forwarding_events)), (columns_x[0], rows_y[2]))
+        self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
             
         pygame.display.set_caption("UmbrUI")
         pygame.display.update() 
@@ -49,6 +64,7 @@ class UmbrUI():
         self.headingFont = pygame.freetype.Font(light_font, 18)
         self.textFont = pygame.freetype.Font(bold_font, 32)
         self.smallTextFont = pygame.freetype.Font(bold_font, 20)
+        self.add_logo_and_text()
 
     def add_logo_and_text(self):
         title_surf, title_rect = self.titleFont.render("umbrel")
@@ -85,13 +101,36 @@ class UmbrUI():
     def save_screenshot(self):
         pygame.display.flip() 
         pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
+
+    def warnUI(self):
+        self.screen.fill(background_color)
+        self.build_info_section("", "You haven't opened the Umbrel dashboard yet.", (columns_x[0], rows_y[0]))
+        self.build_info_section("", "Please do that first to access this screen.", (columns_x[0], rows_y[1] - 70))
+        pygame.display.update()
         
+
+# Try to connect to bitcoin RPC and get data
+try:
+    btcurl = "http://%s:%s@%s:%s"%(os.getenv('BITCOIN_RPC_USER'), os.getenv('BITCOIN_RPC_PASS'), os.getenv('BITCOIN_IP'), os.getenv('BITCOIN_RPC_PORT'))
+    rpc_connection = AuthServiceProxy(btcurl)
+    rpc_connection.getblockchaininfo()
+except Exception:
+    print("Please make sure BITCOIN_RPC_PORT, BITCOIN_RPC_PASS, BITCOIN_IP and BITCOIN_RPC_PORT are set and valid")
+    exit(1)
+
+btcurl = "http://%s:%s@%s:%s"%(os.getenv('BITCOIN_RPC_USER'), os.getenv('BITCOIN_RPC_PASS'), os.getenv('BITCOIN_IP'), os.getenv('BITCOIN_RPC_PORT'))
+rpc_connection = AuthServiceProxy(btcurl)
+print("Connection to bitcoin core established.")
 
 # Create an instance of the UmbrUI class
 game = UmbrUI()
-
+game.warnUI()
 # Take initial screenshot
 print("Taking initial screenshot")
+game.save_screenshot()
+check_lnd()
+game.mainUI()
+print("Taking screenshot")
 game.save_screenshot()
 
 while True:
