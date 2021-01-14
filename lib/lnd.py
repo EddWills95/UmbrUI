@@ -33,17 +33,13 @@ class LndGRPC:
     
     def _get_macaroon(self):
         if(os.getenv("USE_REGTEST")):
-            with open('./lnd/data/chain/bitcoin/regtest/admin.macaroon', 'rb') as f:
-                macaroon_bytes = f.read()
-                macaroon = codecs.encode(macaroon_bytes, 'hex')
+            f = open('./lnd/data/chain/bitcoin/regtest/admin.macaroon', 'rb')
         elif(os.getenv("USE_TESTNET")):
-            with open('./lnd/data/chain/bitcoin/testnet/admin.macaroon', 'rb') as f:
-                macaroon_bytes = f.read()
-                macaroon = codecs.encode(macaroon_bytes, 'hex')
+            f = open('./lnd/data/chain/bitcoin/testnet/admin.macaroon', 'rb')
         else:
-            with open('./lnd/data/chain/bitcoin/mainnet/admin.macaroon', 'rb') as f:
-                macaroon_bytes = f.read()
-                macaroon = codecs.encode(macaroon_bytes, 'hex')
+            f = open('./lnd/data/chain/bitcoin/mainnet/admin.macaroon', 'rb')
+        macaroon_bytes = f.read()
+        macaroon = codecs.encode(macaroon_bytes, 'hex')
         return macaroon
 
     def get_active_channels(self):
