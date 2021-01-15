@@ -72,8 +72,8 @@ class UmbrUI():
                 userData = json.loads(f.read())
 
         for element in userData["displayedElements"]:
-            # No builtin functions and not more than we can get onto the screen (4 rows)
-            if(element.startswith("__") == False and row != 3):
+            # Not more than we can get onto the screen (4 rows)
+            if(row != 3):
                 try:
                     elementData = eval("sectionsList." + element + "(sectionsList)").getData()
                     # elementData[0]: title
