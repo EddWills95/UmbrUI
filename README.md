@@ -9,7 +9,7 @@ Milestones:
 - [x] Connect to BTC & LND services
 - [ ] Allow user to set screen size
 - [ ] Allow user to chose what is displayed
-- [x] Shutdown script to blank out screen on uninstall / shutdown
+- [ ] Shutdown script to blank out screen on uninstall / shutdown (Not worked as expected)
 
 The goal is to be able to present the user with some helpful information such as: 
 - [x] IP address 
