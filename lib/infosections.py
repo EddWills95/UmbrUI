@@ -1,97 +1,73 @@
-
-from lib.network import get_ip, get_tor_address
-from lib.qr_generator import generate_qr_code
-from lib.lnd import LndGRPC
-from lib.btc import BtcRPC
-import lib.rpc_pb2 as ln
-import lib.rpc_pb2_grpc as lnrpc
 from lib.network import get_tor_address
 from consts import bold_font
 
 import pygame
 
 
+class infoSection():
+    def __init__(self, parent):
+        self.title = "Info section"
+        self.data = "Data"
+        self.font = False
+        self.ownRow = False
+        self.parent = parent
+        self.dataFunction = "return"
+
+    def updateData(self):
+        self.data = eval(self.dataFunction)
+
+    def getData(self):
+        self.updateData()
+        return (self.title, self.data, self.ownRow, self.font)
+
 class InfoSectionsList():
 
-    def __init__(self):
+    def __init__(self, btc, lnd):
         # Init RPC connections
-        self.btc_grpc = BtcRPC()
-        self.lnd_grpc = LndGRPC()
+        self.btc_rpc = btc
+        self.lnd_grpc = lnd
 
-    class torURL():
+    class torURL(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "Tor URL"
             self.data = "Loading..."
-            self.parent = parent
+            self.font = pygame.freetype.Font(bold_font, 20)
+            self.ownRow = True
+            self.dataFunction = "get_tor_address()"
 
-        def updateData(self):
-            self.data = get_tor_address()
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, True, pygame.freetype.Font(bold_font, 20))
-
-    class maxSend():
+    class maxSend(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "Max Send"
             self.data = "Loading..."
-            self.parent = parent
+            self.dataFunction = "self.parent.lnd_grpc.get_max_send()"
 
-        def updateData(self):
-            self.data = self.parent.lnd_grpc.get_max_send()
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, False, False)
-
-    class maxReceive():
+    class maxReceive(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "Max Recieve"
             self.data = "Loading..."
             self.parent = parent
+            self.dataFunction = "self.parent.lnd_grpc.get_max_receive()"
 
-        def updateData(self):
-            self.data = self.parent.lnd_grpc.get_max_receieve()
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, False, False)
-
-    class activeChannels():
+    class activeChannels(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "Active Channels"
             self.data = "Loading..."
-            self.parent = parent
+            self.dataFunction = "self.parent.lnd_grpc.get_active_channels()"
 
-        def updateData(self):
-            self.data = self.parent.lnd_grpc.get_active_channels()
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, False, False)
-
-    class forward():
+    class forward(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "24H Forwards"
             self.data = "Loading..."
-            self.parent = parent
+            self.dataFunction = "self.parent.lnd_grpc.get_forwarding_events()"
 
-        def updateData(self):
-            self.data = self.parent.lnd_grpc.get_forwarding_events()
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, False, False)
-
-    class syncProgress():
+    class syncProgress(infoSection):
         def __init__(self, parent):
+            infoSection.__init__(self, parent)
             self.title = "Sync progress"
             self.data = "Loading..."
-            self.parent = parent
-
-        def updateData(self):
-            self.data = str(self.parent.btc_grpc.get_sync_progress()) + "%"
-
-        def getData(self):
-            self.updateData()
-            return (self.title, self.data, False, False)
+            self.dataFunction = "str(self.parent.btc_rpc.get_sync_progress()) + '%'"

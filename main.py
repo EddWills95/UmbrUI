@@ -17,8 +17,7 @@ def main():
         if locked:
             try:
                 # Test connection to BTC (by extension LND)
-                btc_rpc = BtcRPC()
-                locked = btc_rpc.connection_locked()
+                locked = umbrui.btc_rpc.connection_locked()
             except Exception:
                 print(
                     "Please make sure BITCOIN_RPC_PORT, BITCOIN_RPC_PASS, BITCOIN_IP and BITCOIN_RPC_PORT are set and valid")

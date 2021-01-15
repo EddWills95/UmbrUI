@@ -1,7 +1,7 @@
 import grpc
 import codecs
 import os
-from time import sleep
+#from time import sleep
 
 import lib.rpc_pb2 as lnrpc
 import lib.rpc_pb2_grpc as rpc_stub
@@ -33,9 +33,9 @@ class LndGRPC:
         return stub
 
     def _get_macaroon(self):
-        if(os.getenv("USE_REGTEST")):
+        if os.getenv("USE_REGTEST"):
             f = open('./lnd/data/chain/bitcoin/regtest/admin.macaroon', 'rb')
-        elif(os.getenv("USE_TESTNET")):
+        elif os.getenv("USE_TESTNET"):
             f = open('./lnd/data/chain/bitcoin/testnet/admin.macaroon', 'rb')
         else:
             f = open('./lnd/data/chain/bitcoin/mainnet/admin.macaroon', 'rb')
@@ -75,7 +75,7 @@ class LndGRPC:
             sats = "0"
         return sats + " Sats"
 
-    def get_max_receieve(self):
+    def get_max_receive(self):
         response = self.stub.ChannelBalance(
             lnrpc.ChannelBalanceRequest(), metadata=self.metadata)
         sats = "0"

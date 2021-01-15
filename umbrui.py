@@ -1,12 +1,8 @@
 # Libraries provided by the system
-import pygame
-import pygame.freetype
-import time
 import os
 import json
-# RPC
-from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
-import grpc
+import pygame
+import pygame.freetype
 
 # Consts
 from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
@@ -16,8 +12,6 @@ from lib.network import get_ip
 from lib.qr_generator import generate_qr_code
 from lib.lnd import LndGRPC
 from lib.btc import BtcRPC
-import lib.rpc_pb2 as ln
-import lib.rpc_pb2_grpc as lnrpc
 from lib.infosections import InfoSectionsList
 
 
@@ -29,6 +23,10 @@ class UmbrUI():
         os.putenv("SDL_AUDIODRIVER", "dummy")
 
         self.init_screen()
+
+        # Init RPC connections
+        self.btc_rpc = BtcRPC()
+        self.lnd_grpc = LndGRPC()
 
     # Sets up the basic view without elements
     def init_screen(self):
@@ -60,7 +58,7 @@ class UmbrUI():
 
     # Get/refresh all elements that can be updated
     def load_updatable_elements(self):
-        sectionsList = InfoSectionsList()
+        sectionsList = InfoSectionsList(self.btc_rpc, self.lnd_grpc)
         column = 0
         row = 0
         try:
@@ -76,7 +74,7 @@ class UmbrUI():
             if(row != 3):
                 try:
                     elementData = eval("sectionsList." +
-                                       element + "(sectionsList)").getData()
+                                        element + "(sectionsList)").getData()
                     # elementData[0]: title
                     # elementData[1]: Displayed data
                     # elementData[2]: Element gets it's own row if set to True
@@ -92,7 +90,7 @@ class UmbrUI():
                         column = 0
                 # Ignore non-existing elements
                 except Exception:
-                    pass
+                   pass
 
         pygame.display.update()
 
@@ -134,7 +132,7 @@ class UmbrUI():
     # When we move away from SPI screen we will not need this
     def save_screenshot(self):
         pygame.display.flip()
-        pygame.image.save(self.screen, "/usr/screenshots/UmbrUI.png")
+        pygame.image.save(self.screen, screenshot_location)
 
     def warnUI(self):
         self.screen.fill(background_color)
