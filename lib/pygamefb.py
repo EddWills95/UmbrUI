@@ -1,9 +1,10 @@
 import os
 import pygame
 
+
 class fbscreen:
     screen = None
-    
+
     def __init__(self):
         # Check env variable to be able to run in X env (e.g. Mac)
         if os.environ.get('NOTPI'):
@@ -16,7 +17,7 @@ class fbscreen:
         disp_no = os.getenv("DISPLAY")
         if disp_no:
             print("I'm running under X display = {0}".format(disp_no))
-        
+
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
         drivers = ['fbcon', 'directfb', 'svgalib']
@@ -32,10 +33,11 @@ class fbscreen:
                 continue
             found = True
             break
-    
+
         if not found:
             raise Exception('No suitable video driver found!')
-        
-        size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+
+        size = (pygame.display.Info().current_w,
+                pygame.display.Info().current_h)
         print("Framebuffer size: %d x %d" % (size[0], size[1]))
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)

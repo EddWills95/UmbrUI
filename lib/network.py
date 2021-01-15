@@ -1,6 +1,7 @@
-import socket 
+import socket
 
-def get_ip(): 
+
+def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect(('10.255.255.255', 1))
@@ -11,7 +12,7 @@ def get_ip():
         s.close()
     return IP
 
+
 def get_tor_address():
     address = open("/usr/tor_hostname", "r")
     return address.read()
-
