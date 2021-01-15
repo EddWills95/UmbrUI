@@ -17,4 +17,7 @@ class BtcRPC:
     def get_blockchain_info(self):
         response = self.connection.getblockchaininfo()
         return response
-    
+
+    def get_sync_progress(self):
+        response = self.connection.getblockchaininfo()
+        return response["verificationprogress"] * 100
