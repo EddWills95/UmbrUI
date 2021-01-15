@@ -22,7 +22,7 @@ services:
   screen:
     image: eddwills95/umbrui-renderer:main
     volumes:
-      - ./screenshots:/usr/screenshots
+      - ${APP_DATA_DIR}/screenshots:/usr/screenshots
     devices:
       - "/dev/gpiomem:/dev/gpiomem"
       - "/dev/spidev0.0:/dev/spidev0.0"
