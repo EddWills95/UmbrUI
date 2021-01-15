@@ -1,5 +1,9 @@
+screen_size = (720, 480)
+
 black = (0, 0, 0)
 background_color = (247,249,251)
+umbrel_blue = (83, 81, 251)
+progress_background = (204, 206, 207)
 bold_font = 'assets/Roboto-Bold.ttf'
 light_font = 'assets/Roboto-Light.ttf'
 
