@@ -3,7 +3,7 @@ import pygame
 import pygame.freetype
 import time
 import os
-
+import json
 # RPC
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import grpc
@@ -12,12 +12,13 @@ import grpc
 from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 
 # Local libraries
-from lib.network import get_ip, get_tor_address
+from lib.network import get_ip
 from lib.qr_generator import generate_qr_code
 from lib.lnd import LndGRPC
 from lib.btc import BtcRPC
 import lib.rpc_pb2 as ln
 import lib.rpc_pb2_grpc as lnrpc
+from lib.infosections import InfoSectionsList
 
 
 class UmbrUI():
@@ -28,10 +29,6 @@ class UmbrUI():
         os.putenv("SDL_AUDIODRIVER", "dummy")
 
         self.init_screen()
-        
-        # Init RPC connections
-        self.btc_grpc = BtcRPC()
-        self.lnd_grpc = LndGRPC()
 
     # Sets up the basic view without elements
     def init_screen(self):
@@ -47,14 +44,12 @@ class UmbrUI():
         self.titleFont = pygame.freetype.Font(bold_font, 56)
         self.headingFont = pygame.freetype.Font(light_font, 18)
         self.textFont = pygame.freetype.Font(bold_font, 32)
-        self.smallTextFont = pygame.freetype.Font(bold_font, 20)
 
     # Builds static data (logo, ip, qr and tor)
     def mainUI(self):
         self.add_logo_and_text()
         self.add_qr_code()
         self.build_info_section("admin", get_ip(), (520, 120), False, True)
-        self.build_info_section("tor", get_tor_address(), (columns_x[0], rows_y[0]), self.smallTextFont)
         
         pygame.display.update() 
 
@@ -65,11 +60,36 @@ class UmbrUI():
 
     # Get/refresh all elements that can be updated
     def load_updatable_elements(self):
-        self.build_info_section("Max Send", self.lnd_grpc.get_max_send(), (columns_x[0], rows_y[1]))
-        self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
-        self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
-        self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
-        self.build_info_section("Sync progress", str(self.btc_grpc.get_sync progress()) + "%", (columns_x[1], rows_y[2]))
+        sectionsList = InfoSectionsList()
+        column = 0
+        row = 0
+        try:
+            with open("/usr/data.json") as f:
+                userData = json.loads(f.read())
+        except Exception:
+            # Load defaults
+            with open("./data.json") as f:
+                userData = json.loads(f.read())
+
+        for element in userData["displayedElements"]:
+            # No builtin functions and not more than we can get onto the screen (4 rows)
+            if(element.startswith("__") == False and row != 3):
+                try:
+                    elementData = eval("sectionsList." + element + "(sectionsList)").getData()
+                    # elementData[0]: title
+                    # elementData[1]: Displayed data
+                    # elementData[2]: Element gets it's own row if set to True
+                    # elementData[3]: Custom text font
+                    if(elementData[2] and column != 0):
+                        row = row + 1
+                        column = 0
+                    self.build_info_section(elementData[0], elementData[1], (columns_x[column], rows_y[row]), elementData[3])
+                    column = column + 1
+                    if(column == 3 or elementData[2]):
+                        row = row + 1
+                        column = 0
+                # Ignore non-existing elements
+                except Exception: pass
         
         pygame.display.update() 
 
@@ -118,3 +138,6 @@ class UmbrUI():
         self.build_info_section("", "You haven't opened the Umbrel dashboard yet.", (columns_x[0], rows_y[0]))
         self.build_info_section("", "Please do that first to access this screen.", (columns_x[0], rows_y[1] - 70))
         pygame.display.update()
+
+        print("Saving updated screenshot")
+        self.save_screenshot()

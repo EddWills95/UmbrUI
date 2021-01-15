@@ -3,6 +3,7 @@ from threading import Event
 import pygame
 
 from umbrui import UmbrUI
+from lib.btc import BtcRPC
 
 exit = Event()
 
@@ -15,7 +16,8 @@ def main():
         if locked:
             try:
                 # Test connection to BTC (by extension LND)
-                locked = umbrui.btc_grpc.connection_locked()
+                btc_rpc = BtcRPC()
+                locked = btc_rpc.connection_locked()
             except Exception:
                 print("Please make sure BITCOIN_RPC_PORT, BITCOIN_RPC_PASS, BITCOIN_IP and BITCOIN_RPC_PORT are set and valid")
                 # Show warning UI if can't connect

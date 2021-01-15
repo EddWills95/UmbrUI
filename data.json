@@ -1,0 +1,10 @@
+{
+    "displayedElements": [
+        "torURL",
+        "activeChannels",
+        "forward",
+        "maxReceive",
+        "maxSend",
+        "syncProgress"
+    ]
+}

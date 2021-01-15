@@ -6,8 +6,9 @@ services:
     # build: 
     #   context: ./umbrui
     volumes:
-      - ./screenshots:/usr/screenshots
+      - ${APP_DATA_DIR}/screenshots:/usr/screenshots
       - ${APP_DATA_DIR}/../../tor/data/web/hostname:/usr/tor_hostname
+      - ${APP_DATA_DIR}/data.json:/data.json
       - ${LND_DATA_DIR}:/app/lnd:ro
     network_mode: host
     environment:
