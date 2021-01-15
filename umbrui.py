@@ -9,7 +9,7 @@ from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import grpc
 
 # Consts
-from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
+from consts import screen_size, black, umbrel_blue, progress_background, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 
 # Local libraries
 from lib.network import get_ip, get_tor_address
@@ -39,8 +39,7 @@ class UmbrUI():
         pygame.init()
         pygame.display.init()
         pygame.display.set_caption("UmbrUI")
-        size = (720, 480)
-        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(screen_size, pygame.FULLSCREEN)
         self.screen.fill(background_color)
         
         # Fonts
@@ -65,11 +64,16 @@ class UmbrUI():
 
     # Get/refresh all elements that can be updated
     def load_updatable_elements(self):
-        self.build_info_section("Max Send", self.lnd_grpc.get_max_send(), (columns_x[0], rows_y[1]))
-        self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
-        self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
-        self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
-        self.build_info_section("Sync progress", str(self.btc_grpc.get_sync_progress()) + "%", (columns_x[1], rows_y[2]))
+        sync_status = self.btc_grpc.get_sync_progress()
+
+        if sync_status < 99:
+            self.build_progress_bar(sync_status)
+        else:
+            self.build_info_section("Max Send", self.lnd_grpc.get_max_send(), (columns_x[0], rows_y[1]))
+            self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
+            self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
+            self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
+            self.build_info_section("Sync progress", str(self.btc_grpc.get_sync_progress()) + "%", (columns_x[1], rows_y[2]))
         
         pygame.display.update() 
 
@@ -107,6 +111,19 @@ class UmbrUI():
 
         self.screen.blit(heading_surf, heading_rect)
         self.screen.blit(text_surf, text_rect)
+
+    def build_progress_bar(self, progress):
+        heading_surf, heading_rect = self.titleFont.render("{}% Synced".format(progress), black)
+        heading_rect.center = (screen_size[0] / 2, rows_y[1] + 30)
+
+        bar_margin = 90
+        bar_width = 680
+        progress_width = progress * bar_width / 100
+        
+        self.screen.blit(heading_surf, heading_rect)
+
+        pygame.draw.rect(self.screen, progress_background, (columns_x[0], rows_y[1] + bar_margin, bar_width, 40), 0, 10)
+        pygame.draw.rect(self.screen, umbrel_blue, (columns_x[0] , rows_y[1] + bar_margin, progress_width, 40), 0, 10)
 
     # When we move away from SPI screen we will not need this
     def save_screenshot(self):
