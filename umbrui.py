@@ -69,7 +69,7 @@ class UmbrUI():
         self.build_info_section("Max Recieve", self.lnd_grpc.get_max_receieve(), (columns_x[1], rows_y[1]))
         self.build_info_section("Active Channels", self.lnd_grpc.get_active_channels(), (columns_x[2], rows_y[1]))
         self.build_info_section("24H Forwards", self.lnd_grpc.get_forwarding_events(), (columns_x[0], rows_y[2]))
-        # self.build_info_section("Sync progress", str(btcresponse["verificationprogress"] * 100) + "%", (columns_x[1], rows_y[2]))
+        self.build_info_section("Sync progress", str(self.btc_grpc.get_sync progress()) + "%", (columns_x[1], rows_y[2]))
         
         pygame.display.update() 
 
