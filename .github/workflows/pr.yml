@@ -40,4 +40,4 @@ jobs:
                 --cache-from "type=local,src=/tmp/.buildx-cache" \
                 --cache-to "type=local,dest=/tmp/.buildx-cache" \
                 --platform ${{matrix.platform}} \
-                --tag umbrui:$BRANCH
+                --tag umbrui:$BRANCH ./
