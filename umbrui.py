@@ -57,7 +57,7 @@ class UmbrUI():
 
     # Get/refresh all elements that can be updated
     def load_updatable_elements(self):
-        sync_status = self.btc_grpc.get_sync_progress()
+        sync_status = self.btc_rpc.get_sync_progress()
 
         if sync_status < 99:
             self.build_progress_bar(sync_status)
@@ -94,7 +94,7 @@ class UmbrUI():
                             column = 0
                     # Ignore non-existing elements
                     except Exception:
-                    pass
+                        pass
 
         pygame.display.update()
 
