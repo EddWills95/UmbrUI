@@ -5,7 +5,7 @@ import pygame
 import pygame.freetype
 
 # Consts
-from consts import black, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
+from consts import screen_size, black, umbrel_blue, progress_background, background_color, bold_font, light_font, columns_x, rows_y, screenshot_location
 
 # Local libraries
 from lib.network import get_ip
@@ -34,8 +34,7 @@ class UmbrUI():
         pygame.init()
         pygame.display.init()
         pygame.display.set_caption("UmbrUI")
-        size = (720, 480)
-        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(screen_size, pygame.FULLSCREEN)
         self.screen.fill(background_color)
 
         # Fonts
@@ -58,39 +57,44 @@ class UmbrUI():
 
     # Get/refresh all elements that can be updated
     def load_updatable_elements(self):
-        sectionsList = InfoSectionsList(self.btc_rpc, self.lnd_grpc)
-        column = 0
-        row = 0
-        try:
-            with open("/usr/data.json") as f:
-                userData = json.loads(f.read())
-        except Exception:
-            # Load defaults
-            with open("./data.json") as f:
-                userData = json.loads(f.read())
+        sync_status = self.btc_grpc.get_sync_progress()
 
-        for element in userData["displayedElements"]:
-            # Not more than we can get onto the screen (4 rows)
-            if(row != 3):
-                try:
-                    elementData = eval("sectionsList." +
-                                        element + "(sectionsList)").getData()
-                    # elementData[0]: title
-                    # elementData[1]: Displayed data
-                    # elementData[2]: Element gets it's own row if set to True
-                    # elementData[3]: Custom text font
-                    if(elementData[2] and column != 0):
-                        row = row + 1
-                        column = 0
-                    self.build_info_section(
-                        elementData[0], elementData[1], (columns_x[column], rows_y[row]), elementData[3])
-                    column = column + 1
-                    if(column == 3 or elementData[2]):
-                        row = row + 1
-                        column = 0
-                # Ignore non-existing elements
-                except Exception:
-                   pass
+        if sync_status < 99:
+            self.build_progress_bar(sync_status)
+        else:
+            sectionsList = InfoSectionsList(self.btc_rpc, self.lnd_grpc)
+            column = 0
+            row = 0
+            try:
+                with open("/usr/data.json") as f:
+                    userData = json.loads(f.read())
+            except Exception:
+                # Load defaults
+                with open("./data.json") as f:
+                    userData = json.loads(f.read())
+
+            for element in userData["displayedElements"]:
+                # Not more than we can get onto the screen (4 rows)
+                if(row != 3):
+                    try:
+                        elementData = eval("sectionsList." +
+                                            element + "(sectionsList)").getData()
+                        # elementData[0]: title
+                        # elementData[1]: Displayed data
+                        # elementData[2]: Element gets it's own row if set to True
+                        # elementData[3]: Custom text font
+                        if(elementData[2] and column != 0):
+                            row = row + 1
+                            column = 0
+                        self.build_info_section(
+                            elementData[0], elementData[1], (columns_x[column], rows_y[row]), elementData[3])
+                        column = column + 1
+                        if(column == 3 or elementData[2]):
+                            row = row + 1
+                            column = 0
+                    # Ignore non-existing elements
+                    except Exception:
+                    pass
 
         pygame.display.update()
 
@@ -128,6 +132,19 @@ class UmbrUI():
 
         self.screen.blit(heading_surf, heading_rect)
         self.screen.blit(text_surf, text_rect)
+
+    def build_progress_bar(self, progress):
+        heading_surf, heading_rect = self.titleFont.render("{}% Synced".format(progress), black)
+        heading_rect.center = (screen_size[0] / 2, rows_y[1] + 30)
+
+        bar_margin = 90
+        bar_width = 680
+        progress_width = progress * bar_width / 100
+        
+        self.screen.blit(heading_surf, heading_rect)
+
+        pygame.draw.rect(self.screen, progress_background, (columns_x[0], rows_y[1] + bar_margin, bar_width, 40), 0, 10)
+        pygame.draw.rect(self.screen, umbrel_blue, (columns_x[0] , rows_y[1] + bar_margin, progress_width, 40), 0, 10)
 
     # When we move away from SPI screen we will not need this
     def save_screenshot(self):
