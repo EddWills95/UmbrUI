@@ -1,5 +1,5 @@
 from lib.network import get_tor_address
-from consts import bold_font
+from consts import light_font
 
 import pygame
 
@@ -32,7 +32,7 @@ class InfoSectionsList():
             infoSection.__init__(self, parent)
             self.title = "Tor URL"
             self.data = "Loading..."
-            self.font = pygame.freetype.Font(bold_font, 20)
+            self.font = pygame.freetype.Font(light_font, 22)
             self.ownRow = True
             self.dataFunction = "get_tor_address()"
 
