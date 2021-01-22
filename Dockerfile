@@ -1,4 +1,4 @@
-FROM aarondewes/python-grpc:v1.35.0-pre1.75
+FROM aarondewes/python-grpc:v1.35.0
 
 RUN apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libfreetype6-dev libjpeg-dev libportmidi-dev gcc g++ make && \
     pip3 install pypng pygame pyqrcode python-bitcoinrpc && \ 
