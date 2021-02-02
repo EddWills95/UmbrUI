@@ -7,8 +7,8 @@ progress_background = (204, 206, 207)
 bold_font = 'assets/Roboto-Bold.ttf'
 light_font = 'assets/Roboto-Light.ttf'
 
-columns_x = [ 20, 240, 480 ]
-rows_y = [ 190, 285, 380 ]
+columns_x = [20, 240, 480]
+rows_y = [190, 285, 380]
 
 QR_file_name = "QR.png"
 QR_mini_img = "assets/umbrel-qr-icon.png"
